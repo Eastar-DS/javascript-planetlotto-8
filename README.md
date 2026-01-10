@@ -38,6 +38,6 @@
 
 ### 4. 리팩토링
 
-- 상수 분리
-- makeLottos 함수 분리
-- LottoGame model 생성 후 App.js에서 getCountsByRank 메소드 사용
+- constants.js 생성 후 상수 분리
+- App.js에서 입력된 금액으로 로또를 발행하는 makeLottos 함수 분리
+- LottoGame 모델 생성 후 App.js에서 getCountsByRank 메소드 사용
