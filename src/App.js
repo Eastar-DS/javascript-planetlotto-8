@@ -15,7 +15,7 @@ class App {
     OutputView.printPurchasedLottos(lottos);
 
     const winningNumbersArray = await this.inputWinningNumbers();
-    const bonusNumberInteger = await this.inputBonusNumber();
+    const bonusNumberInteger = await this.inputBonusNumber(winningNumbersArray);
 
     // countsByRank 생성
     const countsByRank = new Map([
@@ -33,30 +33,6 @@ class App {
 
     // 로또 결과 출력
     OutputView.printResult(countsByRank);
-  }
-
-  getRank(numbers, winningNumbers, bonusNumber) {
-    const matchCount = numbers.filter((number) => winningNumbers.includes(number)).length;
-    if (matchCount === 5) {
-      return 1;
-    }
-    if (matchCount === 4) {
-      return this.#getRankTwoOrThree(numbers, bonusNumber);
-    }
-    if (matchCount === 3 && numbers.includes(bonusNumber)) {
-      return 4;
-    }
-    if (matchCount === 2 && numbers.includes(bonusNumber)) {
-      return 5;
-    }
-    return 0;
-  }
-
-  #getRankTwoOrThree(numbers, bonusNumber) {
-    if (numbers.includes(bonusNumber)) {
-      return 2;
-    }
-    return 3;
   }
 
   async inputTotalCost() {
@@ -85,17 +61,41 @@ class App {
     }
   }
 
-  async inputBonusNumber() {
+  async inputBonusNumber(winningNumbersArray) {
     while (true) {
       try {
         // eslint-disable-next-line no-await-in-loop
         const input = await InputView.askBonusNumber();
-        Validator.validateBonusNumbers(input);
+        Validator.validateBonusNumbers(winningNumbersArray, input);
         return input;
       } catch (error) {
         OutputView.printErrorMessage(error);
       }
     }
+  }
+
+  getRank(numbers, winningNumbers, bonusNumber) {
+    const matchCount = numbers.filter((number) => winningNumbers.includes(number)).length;
+    if (matchCount === 5) {
+      return 1;
+    }
+    if (matchCount === 4) {
+      return this.#getRankTwoOrThree(numbers, bonusNumber);
+    }
+    if (matchCount === 3 && numbers.includes(bonusNumber)) {
+      return 4;
+    }
+    if (matchCount === 2 && numbers.includes(bonusNumber)) {
+      return 5;
+    }
+    return 0;
+  }
+
+  #getRankTwoOrThree(numbers, bonusNumber) {
+    if (numbers.includes(bonusNumber)) {
+      return 2;
+    }
+    return 3;
   }
 }
 

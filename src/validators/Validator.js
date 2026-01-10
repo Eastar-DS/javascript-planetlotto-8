@@ -1,30 +1,40 @@
+import { ERROR_MESSAGES } from '../constants.js';
+
 class Validator {
   static validateCost(num) {
+    if (num <= 0) {
+      throw Error(ERROR_MESSAGES.INPUT.INVALID_COST_MINIMUM);
+    }
+
     if (num % 500 !== 0) {
-      throw Error('구매 금액은 500원 단위여야 합니다.');
+      throw Error(ERROR_MESSAGES.INPUT.INVALID_COST_UNIT);
     }
   }
 
   static validateWinningNumbers(winningNumbers) {
     const winningNumbersSet = new Set(winningNumbers);
     if (winningNumbers.length !== winningNumbersSet.size) {
-      throw Error('당첨 번호는 중복될 수 없습니다.');
+      throw Error(ERROR_MESSAGES.LOTTO.DUPLICATE_NUMBERS);
     }
 
     if (winningNumbers.length !== 5) {
-      throw Error('당첨 번호는 5개가 입력되어야 합니다.');
+      throw Error(ERROR_MESSAGES.LOTTO.INVALID_LENGTH);
     }
 
     winningNumbers.forEach((number) => {
       if (number < 1 || number > 30) {
-        throw Error('당첨 번호는 1~30 사이의 숫자여야 합니다.');
+        throw Error(ERROR_MESSAGES.LOTTO.INVALID_RANGE);
       }
     });
   }
 
-  static validateBonusNumbers(bonusNumber) {
+  static validateBonusNumbers(winningNumbers, bonusNumber) {
     if (bonusNumber < 1 || bonusNumber > 30) {
-      throw Error('보너스 번호는 1~30 사이의 숫자여야 합니다.');
+      throw Error(ERROR_MESSAGES.GAME.INVALID_BONUS_NUMBER_RANGE);
+    }
+
+    if (winningNumbers.includes(bonusNumber)) {
+      throw Error(ERROR_MESSAGES.GAME.DUPLICATE_BONUS_NUMBER);
     }
   }
 }

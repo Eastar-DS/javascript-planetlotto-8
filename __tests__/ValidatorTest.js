@@ -1,3 +1,4 @@
+import { ERROR_MESSAGES } from '../src/constants.js';
 import Validator from '../src/validators/Validator.js';
 
 // 입력값들이 숫자인지는 view.js에서 검증해줍니다.
@@ -16,7 +17,23 @@ describe('validateCost 메서드 테스트', () => {
     const num = 5501;
 
     // when & then: 에러가 발생함
-    expect(() => Validator.validateCost(num)).toThrow('구매 금액은 500원 단위여야 합니다.');
+    expect(() => Validator.validateCost(num)).toThrow(ERROR_MESSAGES.INPUT.INVALID_COST_UNIT);
+  });
+
+  test('금액이 0원이여도 에러 발생', () => {
+    // given
+    const num = 0;
+
+    // when & then: 에러가 발생함
+    expect(() => Validator.validateCost(num)).toThrow(ERROR_MESSAGES.INPUT.INVALID_COST_MINIMUM);
+  });
+
+  test('금액이 500원 단위 음수여도 에러 발생', () => {
+    // given
+    const num = -1000;
+
+    // when & then: 에러가 발생함
+    expect(() => Validator.validateCost(num)).toThrow(ERROR_MESSAGES.INPUT.INVALID_COST_MINIMUM);
   });
 });
 
@@ -27,7 +44,7 @@ describe('validateWinningNumbers 메서드 테스트', () => {
 
     // when & then: 에러가 발생함
     expect(() => Validator.validateWinningNumbers(winningNumbers)).toThrow(
-      '당첨 번호는 중복될 수 없습니다.'
+      ERROR_MESSAGES.LOTTO.DUPLICATE_NUMBERS
     );
   });
 
@@ -37,7 +54,7 @@ describe('validateWinningNumbers 메서드 테스트', () => {
 
     // when & then: 에러가 발생함
     expect(() => Validator.validateWinningNumbers(winningNumbers)).toThrow(
-      '당첨 번호는 5개가 입력되어야 합니다.'
+      ERROR_MESSAGES.LOTTO.INVALID_LENGTH
     );
   });
 
@@ -47,7 +64,7 @@ describe('validateWinningNumbers 메서드 테스트', () => {
 
     // when & then: 에러가 발생함
     expect(() => Validator.validateWinningNumbers(winningNumbers)).toThrow(
-      '당첨 번호는 5개가 입력되어야 합니다.'
+      ERROR_MESSAGES.LOTTO.INVALID_LENGTH
     );
   });
 
@@ -57,7 +74,7 @@ describe('validateWinningNumbers 메서드 테스트', () => {
 
     // when & then: 에러가 발생함
     expect(() => Validator.validateWinningNumbers(winningNumbers)).toThrow(
-      '당첨 번호는 1~30 사이의 숫자여야 합니다.'
+      ERROR_MESSAGES.LOTTO.INVALID_RANGE
     );
   });
 
@@ -67,7 +84,7 @@ describe('validateWinningNumbers 메서드 테스트', () => {
 
     // when & then: 에러가 발생함
     expect(() => Validator.validateWinningNumbers(winningNumbers)).toThrow(
-      '당첨 번호는 1~30 사이의 숫자여야 합니다.'
+      ERROR_MESSAGES.LOTTO.INVALID_RANGE
     );
   });
 });
@@ -75,21 +92,34 @@ describe('validateWinningNumbers 메서드 테스트', () => {
 describe('validateBonusNumbers 메서드 테스트', () => {
   test('보너스 번호가 1보다 작으면 에러 발생', () => {
     // given
+    const winningNumbers = [1, 2, 3, 4, 5];
     const bonusNumbers = 0;
 
     // when & then: 에러가 발생함
-    expect(() => Validator.validateBonusNumbers(bonusNumbers)).toThrow(
-      '보너스 번호는 1~30 사이의 숫자여야 합니다.'
+    expect(() => Validator.validateBonusNumbers(winningNumbers, bonusNumbers)).toThrow(
+      ERROR_MESSAGES.GAME.INVALID_BONUS_NUMBER_RANGE
     );
   });
 
   test('보너스 번호가 30보다 크면 에러 발생', () => {
     // given
+    const winningNumbers = [1, 2, 3, 4, 5];
     const bonusNumbers = 31;
 
     // when & then: 에러가 발생함
-    expect(() => Validator.validateBonusNumbers(bonusNumbers)).toThrow(
-      '보너스 번호는 1~30 사이의 숫자여야 합니다.'
+    expect(() => Validator.validateBonusNumbers(winningNumbers, bonusNumbers)).toThrow(
+      ERROR_MESSAGES.GAME.INVALID_BONUS_NUMBER_RANGE
+    );
+  });
+
+  test('보너스 번호가 당첨번호와 겹치면 에러 발생', () => {
+    // given
+    const winningNumbers = [1, 2, 3, 4, 5];
+    const bonusNumbers = 1;
+
+    // when & then: 에러가 발생함
+    expect(() => Validator.validateBonusNumbers(winningNumbers, bonusNumbers)).toThrow(
+      ERROR_MESSAGES.GAME.DUPLICATE_BONUS_NUMBER
     );
   });
 });
