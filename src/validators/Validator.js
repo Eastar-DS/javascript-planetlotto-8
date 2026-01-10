@@ -24,7 +24,7 @@ class Validator {
 
   static validateBonusNumbers(bonusNumber) {
     if (bonusNumber < 1 || bonusNumber > 30) {
-      throw Error('당첨 번호는 1~30 사이의 숫자여야 합니다.');
+      throw Error('보너스 번호는 1~30 사이의 숫자여야 합니다.');
     }
   }
 }
