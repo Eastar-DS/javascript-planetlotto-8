@@ -1,7 +1,3 @@
-import { Random } from '@woowacourse/mission-utils';
-import Validator from '../validators/Validator.js';
-import { LOTTO_CONFIG } from '../constants.js';
-
 class LottoGame {
   #lottos;
 
@@ -9,26 +5,64 @@ class LottoGame {
 
   #bonusNumber;
 
-  constructor(totalCost, winningNumbers, bonusNumber) {
-    LottoGame.#validate(totalCost, winningNumbers, bonusNumber);
-    this.#lottos = [];
-    for (let i = 0; i < totalCost / LOTTO_CONFIG.TICKET_PRICE; i++) {
-      const randomFiveNumbers = Random.pickUniqueNumbersInRange(
-        LOTTO_CONFIG.MIN_NUMBER,
-        LOTTO_CONFIG.MAX_NUMBER,
-        LOTTO_CONFIG.NUMBERS_COUNT
-      );
-      // 오름차순 정렬하여 lottos에 push
-      this.#lottos.push(randomFiveNumbers.toSorted((a, b) => a - b));
-    }
+  constructor(lottos, winningNumbers, bonusNumber) {
+    this.#lottos = lottos;
     this.#winningNumbers = winningNumbers;
     this.#bonusNumber = bonusNumber;
   }
 
-  static #validate(totalCost, winningNumbers, bonusNumber) {
-    Validator.validateCost(totalCost);
-    Validator.validateWinningNumbers(winningNumbers);
-    Validator.validateBonusNumbers(bonusNumber);
+  getLottos() {
+    return this.#lottos;
+  }
+
+  getWinningNumbers() {
+    return this.#winningNumbers;
+  }
+
+  getBonusNumber() {
+    return this.#bonusNumber;
+  }
+
+  getCountsByRank() {
+    const countsByRank = new Map([
+      [0, 0],
+      [1, 0],
+      [2, 0],
+      [3, 0],
+      [4, 0],
+      [5, 0],
+    ]);
+
+    this.#lottos.forEach((lotto) => {
+      const rank = this.#getRank(lotto, this.#winningNumbers, this.#bonusNumber);
+      countsByRank.set(rank, countsByRank.get(rank) + 1);
+    });
+
+    return countsByRank;
+  }
+
+  #getRank(numbers, winningNumbers, bonusNumber) {
+    const matchCount = numbers.filter((number) => winningNumbers.includes(number)).length;
+    if (matchCount === 5) {
+      return 1;
+    }
+    if (matchCount === 4) {
+      return this.#getRankTwoOrThree(numbers, bonusNumber);
+    }
+    if (matchCount === 3 && numbers.includes(bonusNumber)) {
+      return 4;
+    }
+    if (matchCount === 2 && numbers.includes(bonusNumber)) {
+      return 5;
+    }
+    return 0;
+  }
+
+  #getRankTwoOrThree(numbers, bonusNumber) {
+    if (numbers.includes(bonusNumber)) {
+      return 2;
+    }
+    return 3;
   }
 }
 

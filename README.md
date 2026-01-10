@@ -27,4 +27,5 @@
 
 4. 리팩토링
   - 상수 분리
-  - LottoGame model 생성
+  - makeLottos 함수 분리
+  - LottoGame model 생성 후 App.js에서 사용
