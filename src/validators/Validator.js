@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES } from '../constants.js';
+import { ERROR_MESSAGES, LOTTO_CONFIG } from '../constants.js';
 
 class Validator {
   static validateCost(num) {
@@ -6,7 +6,7 @@ class Validator {
       throw Error(ERROR_MESSAGES.INPUT.INVALID_COST_MINIMUM);
     }
 
-    if (num % 500 !== 0) {
+    if (num % LOTTO_CONFIG.TICKET_PRICE !== 0) {
       throw Error(ERROR_MESSAGES.INPUT.INVALID_COST_UNIT);
     }
   }
@@ -17,19 +17,19 @@ class Validator {
       throw Error(ERROR_MESSAGES.LOTTO.DUPLICATE_NUMBERS);
     }
 
-    if (winningNumbers.length !== 5) {
+    if (winningNumbers.length !== LOTTO_CONFIG.NUMBERS_COUNT) {
       throw Error(ERROR_MESSAGES.LOTTO.INVALID_LENGTH);
     }
 
     winningNumbers.forEach((number) => {
-      if (number < 1 || number > 30) {
+      if (number < LOTTO_CONFIG.MIN_NUMBER || number > LOTTO_CONFIG.MAX_NUMBER) {
         throw Error(ERROR_MESSAGES.LOTTO.INVALID_RANGE);
       }
     });
   }
 
   static validateBonusNumbers(winningNumbers, bonusNumber) {
-    if (bonusNumber < 1 || bonusNumber > 30) {
+    if (bonusNumber < LOTTO_CONFIG.MIN_NUMBER || bonusNumber > LOTTO_CONFIG.MAX_NUMBER) {
       throw Error(ERROR_MESSAGES.GAME.INVALID_BONUS_NUMBER_RANGE);
     }
 
